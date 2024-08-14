@@ -1,6 +1,6 @@
 ![Travis Build Status](https://img.shields.io/travis/com/open-quantum-safe/liboqs?logo=travis&label=travis%20ci)
 
-liboqs
+liboqsfoo
 ======================
 
 liboqs is an open source C library for quantum-safe cryptographic algorithms.
