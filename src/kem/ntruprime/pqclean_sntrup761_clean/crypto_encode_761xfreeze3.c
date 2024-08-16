@@ -2,7 +2,7 @@
 
 #define int16 int16_t
 
-#define p 761
+#define px 761
 
 /* valid inputs: -16384 <= x < 16384 */
 /* then 3 divides x-F3_freeze(x) */
@@ -19,7 +19,7 @@ void PQCLEAN_SNTRUP761_CLEAN_crypto_encode_761xfreeze3(unsigned char *s, const v
     const int16 *r = v;
 
     int i;
-    for (i = 0; i < p; ++i) {
+    for (i = 0; i < px; ++i) {
         s[i] = F3_freeze(r[i]);
     }
 }

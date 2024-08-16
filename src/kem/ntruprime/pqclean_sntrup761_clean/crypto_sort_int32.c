@@ -16,7 +16,7 @@
 
 /* assume 2 <= n <= 0x40000000 */
 void PQCLEAN_SNTRUP761_CLEAN_crypto_sort_int32(int32_t *x, long long n) {
-    int32 top, p, q, r, i;
+    int32 top, px, q, r, i;
     long long j;
 
     top = 1;
@@ -24,56 +24,56 @@ void PQCLEAN_SNTRUP761_CLEAN_crypto_sort_int32(int32_t *x, long long n) {
         top += top;
     }
 
-    for (p = top; p >= 1; p >>= 1) {
+    for (px = top; px >= 1; px >>= 1) {
         i = 0;
-        while (i + 2 * p <= n) {
-            for (j = i; j < i + p; ++j) {
-                int32_MINMAX(x[j], x[j + p]);
+        while (i + 2 * px <= n) {
+            for (j = i; j < i + px; ++j) {
+                int32_MINMAX(x[j], x[j + px]);
             }
-            i += 2 * p;
+            i += 2 * px;
         }
-        for (j = i; j < n - p; ++j) {
-            int32_MINMAX(x[j], x[j + p]);
+        for (j = i; j < n - px; ++j) {
+            int32_MINMAX(x[j], x[j + px]);
         }
 
         i = 0;
         j = 0;
-        for (q = top; q > p; q >>= 1) {
+        for (q = top; q > px; q >>= 1) {
             if (j != i) {
                 for (;;) {
                     if (j == n - q) {
                         goto done;
                     }
-                    int32 a = x[j + p];
-                    for (r = q; r > p; r >>= 1) {
+                    int32 a = x[j + px];
+                    for (r = q; r > px; r >>= 1) {
                         int32_MINMAX(a, x[j + r]);
                     }
-                    x[j + p] = a;
+                    x[j + px] = a;
                     ++j;
-                    if (j == i + p) {
-                        i += 2 * p;
+                    if (j == i + px) {
+                        i += 2 * px;
                         break;
                     }
                 }
             }
-            while (i + p <= n - q) {
-                for (j = i; j < i + p; ++j) {
-                    int32 a = x[j + p];
-                    for (r = q; r > p; r >>= 1) {
+            while (i + px <= n - q) {
+                for (j = i; j < i + px; ++j) {
+                    int32 a = x[j + px];
+                    for (r = q; r > px; r >>= 1) {
                         int32_MINMAX(a, x[j + r]);
                     }
-                    x[j + p] = a;
+                    x[j + px] = a;
                 }
-                i += 2 * p;
+                i += 2 * px;
             }
-            /* now i + p > n - q */
+            /* now i + px > n - q */
             j = i;
             while (j < n - q) {
-                int32 a = x[j + p];
-                for (r = q; r > p; r >>= 1) {
+                int32 a = x[j + px];
+                for (r = q; r > px; r >>= 1) {
                     int32_MINMAX(a, x[j + r]);
                 }
-                x[j + p] = a;
+                x[j + px] = a;
                 ++j;
             }
 

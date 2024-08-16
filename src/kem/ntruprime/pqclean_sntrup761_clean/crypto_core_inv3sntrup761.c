@@ -39,36 +39,36 @@ static small F3_freeze(int16 x) {
     return (small) (x - 3 * ((10923 * x + 16384) >> 15));
 }
 
-/* byte p of output is 0 if recip succeeded; else -1 */
+/* byte px of output is 0 if recip succeeded; else -1 */
 int PQCLEAN_SNTRUP761_CLEAN_crypto_core_inv3sntrup761(unsigned char *outbytes, const unsigned char *inbytes) {
     small *out = (void *) outbytes;
     small *in = (void *) inbytes;
-    small f[p + 1], g[p + 1], v[p + 1], r[p + 1];
+    small f[px + 1], g[px + 1], v[px + 1], r[px + 1];
     int i, loop, delta;
     int sign, swap, t;
 
-    for (i = 0; i < p + 1; ++i) {
+    for (i = 0; i < px + 1; ++i) {
         v[i] = 0;
     }
-    for (i = 0; i < p + 1; ++i) {
+    for (i = 0; i < px + 1; ++i) {
         r[i] = 0;
     }
     r[0] = 1;
-    for (i = 0; i < p; ++i) {
+    for (i = 0; i < px; ++i) {
         f[i] = 0;
     }
     f[0] = 1;
-    f[p - 1] = f[p] = -1;
-    for (i = 0; i < p; ++i) {
+    f[px - 1] = f[px] = -1;
+    for (i = 0; i < px; ++i) {
         small i1 = in[i] & 1;
-        g[p - 1 - i] = (small) (i1 - (in[i] & (i1 << 1)));
+        g[px - 1 - i] = (small) (i1 - (in[i] & (i1 << 1)));
     }
-    g[p] = 0;
+    g[px] = 0;
 
     delta = 1;
 
-    for (loop = 0; loop < 2 * p - 1; ++loop) {
-        for (i = p; i > 0; --i) {
+    for (loop = 0; loop < 2 * px - 1; ++loop) {
+        for (i = px; i > 0; --i) {
             v[i] = v[i - 1];
         }
         v[0] = 0;
@@ -78,7 +78,7 @@ int PQCLEAN_SNTRUP761_CLEAN_crypto_core_inv3sntrup761(unsigned char *outbytes, c
         delta ^= swap & (delta ^ -delta);
         delta += 1;
 
-        for (i = 0; i < p + 1; ++i) {
+        for (i = 0; i < px + 1; ++i) {
             t = swap & (f[i] ^ g[i]);
             f[i] ^= (small) t;
             g[i] ^= (small) t;
@@ -87,24 +87,24 @@ int PQCLEAN_SNTRUP761_CLEAN_crypto_core_inv3sntrup761(unsigned char *outbytes, c
             r[i] ^= (small) t;
         }
 
-        for (i = 0; i < p + 1; ++i) {
+        for (i = 0; i < px + 1; ++i) {
             g[i] = F3_freeze((int16) (g[i] + sign * f[i]));
         }
-        for (i = 0; i < p + 1; ++i) {
+        for (i = 0; i < px + 1; ++i) {
             r[i] = F3_freeze((int16) (r[i] + sign * v[i]));
         }
 
-        for (i = 0; i < p; ++i) {
+        for (i = 0; i < px; ++i) {
             g[i] = g[i + 1];
         }
-        g[p] = (int16) 0;
+        g[px] = (int16) 0;
     }
 
     sign = (int) f[0];
-    for (i = 0; i < p; ++i) {
-        out[i] = (small) (sign * v[p - 1 - i]);
+    for (i = 0; i < px; ++i) {
+        out[i] = (small) (sign * v[px - 1 - i]);
     }
 
-    out[p] = (small) int16_nonzero_mask((int16) delta);
+    out[px] = (small) int16_nonzero_mask((int16) delta);
     return 0;
 }
